@@ -1,0 +1,9 @@
+export(
+	pheatmap2
+)
+
+importFrom("circlize", colorRamp2)
+importMethodsFrom("bioDist", cor.dist, spearman.dist, mutualInfo, tau.dist)
+import("RColorBrewer")
+import("grid")
+

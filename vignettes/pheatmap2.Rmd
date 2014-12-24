@@ -1,0 +1,149 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Pretty and parallel heatmap}
+-->
+
+Pretty and parallel heatmap
+===========================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+First, let's generate a matrix:
+
+```{r}
+set.seed(123)
+mat = rbind(matrix(rnorm(50, 1), 5, ),
+	        matrix(rnorm(50, -1), 5, 10))
+colnames(mat) = paste0("c", 1:10)
+rownames(mat) = paste0("r", 1:10)
+```
+
+plot the matrix:
+
+```{r, message = FALSE}
+library(pheatmap2)
+pheatmap2(mat)
+pheatmap2(mat, cluster_rows = FALSE, cluster_cols = FALSE, 
+    show_colnames = FALSE, show_rownames = FALSE,
+    legend_title = NULL)
+library(circlize)
+pheatmap2(mat, col_fun = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
+```
+
+If `col_fun` is set, the color mapping is resistant to outliers.
+
+```{r}
+mat2 = mat
+mat2[1, 1] = 10
+mat2[1, 2] = -10
+pheatmap2(mat2, col_fun = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
+```
+
+Define column annotations and corresponding colors
+
+```{r}
+annotation = data.frame(label1 = sample(c("a", "b"), 10, replace = TRUE),
+                        label2 = sample(c("c", "d"), 10, replace = TRUE),
+						label3 = 1:10)
+rownames(annotation) = colnames(mat)
+annotation
+
+annotation_colors = list(label1 = c("a" = "red", "b" = "blue"),
+	                     label2 = c("c" = "yellow", "d" = "green"))
+annotation_colors
+```
+
+plot the heatmap with annotations:
+
+```{r}
+pheatmap2(mat, annotation = annotation)
+pheatmap2(mat, annotation = annotation, annotation_colors = annotation_colors)
+```
+
+generate an additional matrix
+
+```{r}
+mat2 = matrix(runif(40), 10, 4)
+colnames(mat2) = paste0("d", 1:4)
+```
+
+plot the heatmap with the additional matrix
+
+```{r fig.width = 10, fig.height = 7}
+pheatmap2(mat, 
+	legend_title = "mat", 
+
+	mat_list = list(mat2 = mat2),
+	col_fun_list = list(mat2 = colorRamp2(c(0, 0.5, 1), c("green", "white", "red"))),
+	legend_title_list = "mat2")
+```
+
+Set gaps between heatmap and the title/sub titles
+
+```{r fig.width = 10, fig.height = 7}
+pheatmap2(mat, 
+	legend_title = "mat", 
+	main = "two heatmap", sub_main = c("mat1", "mat2"),
+	gap = 3,
+
+	mat_list = list(mat2 = mat2),
+	col_fun_list = list(mat2 = colorRamp2(c(0, 0.5, 1), c("green", "white", "red"))),
+	legend_title_list = "mat2")
+```
+
+Annotations for the additional matrix
+
+```{r}
+annotation2 = data.frame(label1 = c("a", "a", "b", "b"), label5 = 1:4)
+rownames(annotation2) = colnames(mat2)
+annotation_colors2 = list(label1 = c("a" = "red", "b" = "blue"))
+```
+
+The complex heatmap
+
+```{r fig.width = 10, fig.height = 7}
+pheatmap2(mat,
+	legend_title = "mat", 
+	annotation = annotation, 
+	annotation_colors = annotation_colors,
+	
+	mat_list = list(mat2 = mat2),
+	col_fun_list = list(mat2 = colorRamp2(c(0, 0.5, 1), c("green", "white", "red"))),
+	legend_title_list = "mat2",
+	annotation_list = list("mat2" = annotation2),
+	annotation_colors_list = list("mat2" = annotation_colors2))
+```						 
+
+Column annotation can also be character.
+
+```{r}
+group = matrix(ifelse(rowMeans(mat) > 0, "high", "low"), ncol = 1)
+colnames(group) = "group"
+```
+
+plot the heatmap with the additional matrix
+
+```{r fig.width = 10, fig.height = 7}
+pheatmap2(mat, 
+	legend_title = "mat", 
+
+	mat_list = list(group = group),	
+	col_fun_list = list(group = colorRamp2(seq_along(unique(group)), c("red", "blue"))),
+	legend_title_list = "group")
+```
+
+Finally, let's make a heatmap which contains everything.
+
+```{r fig.width = 10, fig.height = 7}
+pheatmap2(mat, 
+	legend_title = "mat", 
+	annotation = annotation, 
+	annotation_colors = annotation_colors,
+	
+	mat_list = list(group = group, mat2 = mat2),
+	col_fun_list = list(group = colorRamp2(seq_along(unique(group)), c("red", "blue")),
+                        mat2 = colorRamp2(c(0, 0.5, 1), c("green", "white", "red"))),
+	legend_title_list = c("group", "mat2"),
+	annotation_list = list("mat2" = annotation2),
+	annotation_colors_list = list("mat2" = annotation_colors2))
+```	
