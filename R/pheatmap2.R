@@ -113,10 +113,6 @@ lo = function(coln, rown,
 	# Produce layout()
 	pushViewport(viewport(layout = grid.layout(nrow = 6, ncol = 5, widths = unit.c(treeheight_row, matwidth, rown_width, legend_width, annot_legend_width), 
 		heights = unit.c(main_height, sub_main_height, treeheight_col, annot_height, matheight, coln_height)), gp = do.call(gpar, gp)))
-	
-	# Get cell dimensions
-	pushViewport(vplayout(5, 2))
-	upViewport()
 }
 
 
@@ -376,7 +372,7 @@ heatmap_motor = function(matrix, col_fun,
 		upViewport()
 	}
 	
-	
+	upViewport()
 }
 
 
@@ -406,7 +402,7 @@ cluster_mat = function(mat, distance, method){
 }
 
 # == title
-# modified ``pheatmap`` function
+# Pretty and parallel heatmap
 #
 # == param
 # -mat main matrix
@@ -435,7 +431,7 @@ cluster_mat = function(mat, distance, method){
 # -... other arguments passed to `grid::gpar`
 #
 # == details
-# the enhanced ``pheatmap2`` function can plot more than one heatmaps.
+# Please go to the package vignette.
 #
 pheatmap2 = function(mat,
 	col_fun = colorRamp2(breaks = seq(min(mat), max(mat), length = 7),
