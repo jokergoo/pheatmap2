@@ -107,7 +107,7 @@ draw_legend = function(legend_title, legend, breaks, col_fun, y = unit(1, "npc")
 	
 	text_height = unit(1, "grobheight", textGrob("FGH", gp = gpar(...)))
 	grid.text(legend_title, x = 0, y = y, vjust = 1, hjust = 0, gp = gpar(fontface = "bold", ...))
-	y = y - 1.5 * text_height
+	y = y - 2 * text_height
 	
 	if(is.null(attr(col_fun, "levels"))) {
 		height = unit(100, "bigpts")
