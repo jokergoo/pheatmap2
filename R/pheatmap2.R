@@ -198,7 +198,7 @@ heatmap_motor = function(matrix, col_fun,
 		annotation_list = NULL, annotation_colors_list = NULL,
 		treeheight_row = 0, treeheight_col = 0,
 		tree_row = NULL, tree_col = NULL, tree_col_list = NULL,
-		main = NULL, sub_main = NULL, gap = 1, ...){
+		main = NULL, sub_main = NULL, gap = rep(1, length(mat_list)), ...){
 	
 	fontsize = 10
 	fontsize_row = fontsize
@@ -245,7 +245,7 @@ heatmap_motor = function(matrix, col_fun,
 		if(is.null(mat_list)) {
 			ncol_mat = c(0, ncol(matrix))
 		} else {
-			ncol_mat = c(0, ncol(matrix), sapply(mat_list, function(x) c(gap, ncol(x)-gap)))
+			ncol_mat = c(0, ncol(matrix), sapply(seq_along(mat_list), function(i) c(gap[i], ncol(mat_list[[1]])-gap[i])))
 		}
 		ncl = cumsum(ncol_mat)
 		pos = (ncl[seq_len(length(ncl)/2)*2-1] + ncl[seq_len(length(ncl)/2)*2])/2
@@ -270,9 +270,9 @@ heatmap_motor = function(matrix, col_fun,
 					k = which(names(mat_list) == names(tree_col_list)[i])
 					
 					if(k == 1) {
-						offset = ncol(matrix)+gap
+						offset = ncol(matrix)+gap[i]
 					} else {
-						offset = ncol(matrix) + sum(sapply(mat_list[1:(k-1)], ncol)) + gap
+						offset = ncol(matrix) + sum(sapply(mat_list[1:(k-1)], ncol)) + gap[i]
 					}
 					draw_dendrogram(tree_col_list[[i]], horizontal = T, n = length(cn), offset = offset)
 				}
@@ -436,7 +436,7 @@ cluster_mat = function(mat, distance, method){
 pheatmap2 = function(mat,
 	col_fun = colorRamp2(breaks = seq(min(mat), max(mat), length = 7),
 		colors = rev(brewer.pal(n = 7, name = "RdYlBu"))),
-	mat_list = NULL, col_fun_list = NULL, gap = 1,
+	mat_list = NULL, col_fun_list = NULL, gap = rep(1, length(mat_list)),
 	cluster_rows = TRUE, cluster_cols = TRUE,
 	clustering_distance_rows = "euclidean", clustering_distance_cols = "euclidean", 
 	clustering_method = "complete",  
@@ -660,11 +660,12 @@ pheatmap2 = function(mat,
 		annotation_colors_list = NULL
 	}
 	
-	empty_mat = matrix(NA, nrow = nrow(mat), ncol = gap)
+	if(length(gap) == 1) gap = rep(gap, length(mat_list))
 	
 	# add an additional NA column before current matrix which will be treated as a blank gap
 	if(!is.null(mat_list)) {
 		for(i in seq_along(mat_list)) {
+			empty_mat = matrix(NA, nrow = nrow(mat), ncol = gap[i])
 			mat_list[[i]] = cbind(empty_mat, mat_list[[i]])
 		}
 	}

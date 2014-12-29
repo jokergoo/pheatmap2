@@ -156,8 +156,8 @@ Internally, characters will be firstly converted to factors, then replaced
 as integer numbers and mapping each level of factor to a color.
 
 ```{r}
-group = matrix(ifelse(rowMeans(mat) > 0, "high", "low"), ncol = 1)
-colnames(group) = "group"
+group = ifelse(rowMeans(mat) > 0, "high", "low")
+gender = sample(c("male", "female"), nrow(mat), replace = TRUE)
 ```
 
 Still, you need to use `colorRamp2` to assign colors for each level (levels are
@@ -167,9 +167,11 @@ represented by integers)
 pheatmap2(mat, 
 	legend_title = "mat", 
 
-	mat_list = list(group = group),	
-	col_fun_list = list(group = colorRamp2(1:2, c("red", "blue"))),
-	legend_title_list = "group")
+	mat_list = list(group = group, gender = gender),	
+	col_fun_list = list(group = colorRamp2(1:2, c("red", "blue")),
+		                gender = colorRamp2(1:2, c("orange", "pink"))),
+	legend_title_list = c("group", "gender"),
+	gap = c(1, 0))
 ```
 
 Finally, let's make a heatmap which contains everything.
