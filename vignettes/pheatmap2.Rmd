@@ -3,7 +3,7 @@
 %\VignetteIndexEntry{Pretty and parallel heatmap}
 -->
 
-Pretty and parallel heatmap
+Pretty and Parallel Heatmap
 ===========================
 
 **Author**: Zuguang Gu ( z.gu@dkfz.de )
@@ -22,9 +22,11 @@ knitr::opts_chunk$set(
 options(markdown.HTML.stylesheet = "custom.css")
 ```
 
-**pheatmap2** package is based on original **pheatmap** package.
+**pheatmap2** package is based on original **pheatmap** package. It uses almost  
+same syntax as **pheatmap** but removes arguments which are not commonly used.
+It now supports adding more than one heatmap on the plot.
 
-First, generate a matrix:
+First, let's generate a matrix.
 
 ```{r}
 set.seed(123)
@@ -34,7 +36,7 @@ colnames(mat) = paste0("c", 1:10)
 rownames(mat) = paste0("r", 1:10)
 ```
 
-plot the matrix with default setting:
+Plot the matrix with default setting:
 
 ```{r, message = FALSE}
 library(pheatmap2)
@@ -48,16 +50,20 @@ pheatmap2(mat, cluster_rows = FALSE, cluster_cols = FALSE,
     show_colnames = FALSE, show_rownames = FALSE, legend_title = NULL)
 ```
 
-Map values to colors by a self-defined color function
+**pheatmap2** uses a function to map values to colors. **circlize** provides
+such a generator function which generates a color mapping function based on
+breaks values and corresponding colors. In following example, values less than
+-3 will be mapped to full green, it will be mapped between green and white linearly
+if the value is between -3 and 0.
 
 ```{r}
 library(circlize)
 pheatmap2(mat, col_fun = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
 ```
 
-If `col_fun` is set, color mapping is resistant to outliers.
+One of the advantages of using color mapping function is it is resistant to outliers.
 
-```{r, fig.width = 14, fig.height = 7, echo = c(1:2, 6, 9)}
+```{r, fig.width = 14, fig.height = 7}
 mat2 = mat
 mat2[1, 1] = 10
 grid.newpage()
@@ -91,14 +97,14 @@ annotation_colors
 pheatmap2(mat, annotation = annotation, annotation_colors = annotation_colors)
 ```
 
-generate an additional matrix
+Next, we will demonstrate adding more heatmap. First generate an additional matrix
 
 ```{r}
 mat2 = matrix(runif(40), 10, 4)
 colnames(mat2) = paste0("d", 1:4)
 ```
 
-plot the heatmap with the additional matrix. Arguments for the additional matrix
+Plot the heatmap with the additional matrix. Arguments for the additional matrix
 are similar as the main matrix, but should be put into a list. E.g., `col_fun` is
 for the main matrix, then `col_fun_list` is for the additional matrix. 
 
@@ -111,7 +117,12 @@ pheatmap2(mat,
 	legend_title_list = "mat2")
 ```
 
-Set title/sub titles
+As you can see, `mat_list` and `col_fun_list` should both be a named index and
+the name is used to map matrix to corresponding color function.
+
+`main` is the title for the whole plot. `sub_main` is title for each heatmap.
+`legend_title` is the legend title for the main matrix and `legend_title_list`
+is the legend title for the additional matrix. 
 
 ```{r fig.width = 10, fig.height = 7}
 pheatmap2(mat, 
@@ -123,10 +134,10 @@ pheatmap2(mat,
 	legend_title_list = "mat2")
 ```
 
-Set gaps between heatmap and the title/sub titles. Since **pheatmap2** is modified
-from *pheatmap*, actually, all heatmap are stored in one big matrix and keep several
-columns empty to simulate gaps between heatmap. Thus here gap is the number of empty
-columns between two heatmap.
+Since **pheatmap2** is modified from *pheatmap*, actually, all heatmap are 
+stored in one big matrix and keep several columns empty to simulate gaps between 
+heatmap. Thus here gap is the number of empty columns between two heatmap. `gap`
+can be a scalar or a vector correponding to gaps between every two heatmaps.
 
 ```{r fig.width = 10, fig.height = 7}
 pheatmap2(mat, 
@@ -138,7 +149,7 @@ pheatmap2(mat,
 	legend_title_list = "mat2")
 ```
 
-Annotations for the additional matrix. If annotation is same for two heatmap,
+Annotations for the additional matrix are also set as a list. If annotation is same for two heatmap,
 e.g., the first heatmap and the second both have `label1` annotation, the legend
 for this annotation is only drawn once.
 
@@ -148,7 +159,7 @@ rownames(annotation2) = colnames(mat2)
 annotation_colors2 = list(label1 = c("a" = "red", "b" = "blue"))
 ```
 
-The complex heatmap
+The complex heatmap containing different annotations.
 
 ```{r fig.width = 10, fig.height = 7}
 pheatmap2(mat,
@@ -163,9 +174,9 @@ pheatmap2(mat,
 	annotation_colors_list = list("mat2" = annotation_colors2))
 ```						 
 
-matrix can also be character. This is a way to simulate column annotation.
+Matrix can also be character. This provides a way to simulate column annotation.
 Internally, characters will be firstly converted to factors, then replaced 
-as integer numbers and mapping each level of factor to a color.
+as integer numbers and mapped from each level of factor to a color.
 
 ```{r}
 group = ifelse(rowMeans(mat) > 0, "high", "low")
@@ -173,7 +184,8 @@ gender = sample(c("male", "female"), nrow(mat), replace = TRUE)
 ```
 
 Still, you need to use `colorRamp2` to assign colors for each level (levels are
-represented by integers)
+represented by integers). In following, we set `gap` as a vector and set the second
+element to 0, so there will be no gap between group and gender heatmaps.
 
 ```{r fig.width = 10, fig.height = 7}
 pheatmap2(mat, 
