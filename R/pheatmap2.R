@@ -408,30 +408,32 @@ cluster_mat = function(mat, distance, method){
 # -mat main matrix
 # -col_fun mapping function to transform values to colors
 # -mat_list A list of additional matrix. The list should have name index
-# -col_fun_list A list of color mapping functions. The element should correspond to ``mat_list``
-# -gap gaps between heatmap. It is measured by numbers of empty columns
+# -col_fun_list A list of color mapping functions. The list should have name index and the name index
+#               should correspond to ``mat_list``
+# -gap gaps between heatmap. It is measured by numbers of empty columns. Can be a scalar or a vector
 # -cluster_rows Logical, whether to cluster rows
 # -cluster_cols Logical, whether to cluster columns
-# -clustering_distance_rows method to cluster rows, possible values are in `stats::dist` plus "correlation", "spearman", "mutualInfo", "tao"
+# -clustering_distance_rows method to cluster rows, possible values are in `stats::dist` plus 
+#                           "correlation", "spearman", "mutualInfo", "tao"
 # -clustering_distance_cols same as ``clustering_distance_cols``
 # -clustering_method method to do clustering. Possible values are in `stats::hclust`
 # -legend_title the title for the legend which corresponds to the main matrix
-# -legend_title_list titls for the additional matrix. Valid values should be in the names of ``mat_list``
+# -legend_title_list titles for the additional matrix. 
 # -annotation A data frame, for the format of this variable, see original ``pheatmap`` function
 # -annotation_colors a list, for the format of this variable, see original ``pheatmap`` function
 # -show_rownames logical, whether to plot row names
 # -show_colnames logical, whether to plot column names
 # -main title for the plot
-# -annotation_list a list of ``annotation``
-# -annotation_colors_list a list of ``annotation_colors``
+# -annotation_list a list of ``annotation`` for additional matrix
+# -annotation_colors_list a list of ``annotation_colors`` for additional matrix
 # -show_legend logical, whether show legend
 # -show_annotation_legend logical whether show annotation legend
 # -sub_main sub title for each heatmap
-# -newpage create a new grid newpage
+# -newpage whether create a new grid newpage
 # -... other arguments passed to `grid::gpar`
 #
 # == details
-# Please go to the package vignette.
+# Please refer to the package vignette.
 #
 pheatmap2 = function(mat,
 	col_fun = colorRamp2(breaks = seq(min(mat), max(mat), length = 7),
