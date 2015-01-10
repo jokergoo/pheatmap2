@@ -245,7 +245,7 @@ heatmap_motor = function(matrix, col_fun,
 		if(is.null(mat_list)) {
 			ncol_mat = c(0, ncol(matrix))
 		} else {
-			ncol_mat = c(0, ncol(matrix), sapply(seq_along(mat_list), function(i) c(gap[i], ncol(mat_list[[1]])-gap[i])))
+			ncol_mat = c(0, ncol(matrix), sapply(seq_along(mat_list), function(i) c(gap[i], ncol(mat_list[[i]])-gap[i])))
 		}
 		ncl = cumsum(ncol_mat)
 		pos = (ncl[seq_len(length(ncl)/2)*2-1] + ncl[seq_len(length(ncl)/2)*2])/2
