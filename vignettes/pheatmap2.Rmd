@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 options(markdown.HTML.stylesheet = "custom.css")
 ```
 
-**pheatmap2** package is based on original **pheatmap** package. It uses almost  
+**pheatmap2** package is based on original **pheatmap** package. It uses almost
 same syntax as **pheatmap** but removes arguments which are not commonly used.
 It now supports adding more than one heatmap on the plot.
 
@@ -64,6 +64,7 @@ pheatmap2(mat, col_fun = colorRamp2(c(-3, 0, 3), c("green", "white", "red")))
 One of the advantages of using color mapping function is it is resistant to outliers.
 
 ```{r, fig.width = 14, fig.height = 7}
+library(RColorBrewer)
 mat2 = mat
 mat2[1, 1] = 10
 grid.newpage()
@@ -72,8 +73,8 @@ pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
 pheatmap2(mat2, newpage = FALSE)
 upViewport()
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
-pheatmap2(mat2, col_fun = colorRamp2(c(-3, 0, 3), c("green", "white", "red")), 
-	newpage = FALSE)
+pheatmap2(mat2, col_fun = colorRamp2(seq(-3, 3, length.out = 7), 
+	rev(brewer.pal(n = 7, name = "RdYlBu"))), newpage = FALSE)
 upViewport(2)
 ```
 
@@ -97,7 +98,7 @@ annotation_colors
 pheatmap2(mat, annotation = annotation, annotation_colors = annotation_colors)
 ```
 
-Next, we will demonstrate adding more heatmap. First generate an additional matrix
+Next, we will demonstrate how to add more heatmap. First generate an additional matrix
 
 ```{r}
 mat2 = matrix(runif(40), 10, 4)
@@ -183,8 +184,9 @@ group = ifelse(rowMeans(mat) > 0, "high", "low")
 gender = sample(c("male", "female"), nrow(mat), replace = TRUE)
 ```
 
-Still, you need to use `colorRamp2` to assign colors for each level (levels are
-represented by integers). In following, we set `gap` as a vector and set the second
+For character matrix, colors can simply be specified as a list of colors
+and the order of colors correspond to levels of converted factors.
+In following, we set `gap` as a vector and set the second
 element to 0, so there will be no gap between group and gender heatmaps.
 
 ```{r fig.width = 10, fig.height = 7}
@@ -192,8 +194,8 @@ pheatmap2(mat,
 	legend_title = "mat", 
 
 	mat_list = list(group = group, gender = gender),	
-	col_fun_list = list(group = colorRamp2(1:2, c("red", "blue")),
-		                gender = colorRamp2(1:2, c("orange", "pink"))),
+	col_fun_list = list(group = c("red", "blue"),
+		                gender = c("orange", "pink")),
 	legend_title_list = c("group", "gender"),
 	gap = c(1, 0))
 ```
@@ -207,7 +209,7 @@ pheatmap2(mat,
 	annotation_colors = annotation_colors,
 	
 	mat_list = list(group = group, mat2 = mat2),
-	col_fun_list = list(group = colorRamp2(1:2, c("red", "blue")),
+	col_fun_list = list(group = c("red", "blue"),
                         mat2 = colorRamp2(c(0, 0.5, 1), c("green", "white", "red"))),
 	legend_title_list = c("group", "mat2"),
 	annotation_list = list("mat2" = annotation2),
