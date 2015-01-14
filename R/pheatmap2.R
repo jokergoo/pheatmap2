@@ -457,6 +457,10 @@ pheatmap2 = function(mat,
 	treeheight_row = ifelse(cluster_rows, 50, 0)
 	treeheight_col = ifelse(cluster_cols, 50, 0)
 
+	if(!is.function(col_fun)) {
+		col_fun = colorRamp2(seq_along(col_fun), col_fun)
+	}
+
 	if(length(mat_list) == 0) {
 		mat_list = NULL
 	}
@@ -505,6 +509,12 @@ pheatmap2 = function(mat,
 		if(!setequal(names(mat_list), names(col_fun_list))) {
 			stop("names in `mat_list` should be same as names in `col_fun_list`\n")
 		}
+
+		for(i in seq_along(col_fun_list)) {
+			if(!is.function(col_fun_list[[i]])) {
+				col_fun_list[[i]] = colorRamp2(seq_along(col_fun_list[[i]]), col_fun_list[[i]])
+			}
+		}
 		
 		for(i in seq_along(mat_list)) {
 			# transform to factors
@@ -529,7 +539,7 @@ pheatmap2 = function(mat,
 			}
 		}
 	}
-	
+
 	col_fun_list = col_fun_list[ names(mat_list) ]
 	
 	# Do clustering
