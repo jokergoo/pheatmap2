@@ -1,5 +1,5 @@
 
-## this package is now replaced by [**mheatmap**](https://github.com/jokergoo/mheatmap/) package.
+## this package is now replaced by [**ComplexHeatmap**](https://github.com/jokergoo/ComplexHeatmap/) package.
 
 **pheatmap2** package is based on original **pheatmap** package. It supports plotting several heatmap parallel.
 
